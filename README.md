@@ -106,31 +106,6 @@
 
 ---
 
-## 학습 로드맵
-
-```
-Week 1-2:   Part 1 (입문)
-               │
-               ▼
-Week 3-4:   Part 2 (프롬프트 엔지니어링)
-               │
-               ▼
-Week 5-6:   Part 3 (Function Calling)
-               │
-               ▼
-Week 7-9:   Part 4 (Agentic Patterns)
-               │
-               ▼
-Week 10-12: Part 5 (MCP)
-               │
-               ▼
-Week 13-14: Capstone Project
-```
-
-**총 학습 기간:** 12주 (+ Capstone 2주)
-
----
-
 ## 사전 요구사항
 
 ### 기술적 요구사항
@@ -150,26 +125,6 @@ export ANTHROPIC_API_KEY=sk-ant-...
 # (선택) 로컬 모델 설치
 ollama pull llama3.2
 ```
-
----
-
-## 예제 코드
-
-이 책의 모든 예제 코드는 `spring-ai-examples` 저장소에서 찾을 수 있습니다:
-
-```
-spring-ai-examples/
-├── models/chat/helloworld           → Part 1
-├── misc/openai-streaming-response   → Part 1
-├── prompt-engineering/              → Part 2
-├── misc/spring-ai-java-function-callback → Part 3
-├── advisors/                        → Part 3
-├── agentic-patterns/                → Part 4
-├── agents/reflection                → Part 4
-└── model-context-protocol/          → Part 5
-```
-
----
 
 ## 이 책의 구조
 
