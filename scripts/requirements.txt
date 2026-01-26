@@ -1,0 +1,4 @@
+# 바로 써먹는 Spring AI - PDF 생성 의존성
+markdown>=3.5
+weasyprint>=60.0
+pygments>=2.17
