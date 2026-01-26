@@ -11,6 +11,10 @@
   RevFactory | 2026 최신 판
 </p>
 
+<p align="center">
+  <a href="output/바로_써먹는_Spring_AI.pdf">📥 PDF 다운로드</a>
+</p>
+
 ---
 
 ## 이 책에 대하여
