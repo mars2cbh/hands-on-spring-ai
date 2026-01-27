@@ -73,51 +73,35 @@ Spring AI의 아키텍처를 시각적으로 이해해봅시다:
 
 ![Spring AI Architecture](../images/spring-ai-architecture.png)
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    애플리케이션 레이어                         │
-│              (여러분의 비즈니스 로직이 있는 곳)                  │
-├─────────────────────────────────────────────────────────────┤
-│                       ChatClient                             │
-│            (통합된 API - 모든 제공자에 동일하게 사용)            │
-├─────────────────────────────────────────────────────────────┤
-│    OpenAI    │   Anthropic   │   Azure   │   Ollama        │
-│   ChatModel  │   ChatModel   │  ChatModel │  ChatModel      │
-│   (GPT-4o)   │   (Claude)    │   (Azure)  │   (로컬)        │
-├─────────────────────────────────────────────────────────────┤
-│                      HTTP/API 레이어                         │
-│              (각 제공자와의 실제 통신 담당)                     │
-└─────────────────────────────────────────────────────────────┘
-```
-
 이 구조의 아름다움은 **ChatClient**라는 추상화 계층에 있습니다. 여러분의 비즈니스 코드는 ChatClient만 알면 되고, 실제로 어떤 AI 모델을 사용하는지는 설정 파일에서 결정됩니다. 나중에 OpenAI에서 Claude로 바꾸고 싶다면? 의존성과 설정만 변경하면 됩니다!
 
 ### 1.1.2 지원 AI 모델
 
-Spring AI는 다양한 AI 제공자를 지원합니다. 각각의 특징을 알아봅시다.
+Spring AI는 다양한 AI 제공자를 지원합니다. 각각의 특징을 알아봅시다. (2026년 1월 기준)
 
 #### 클라우드 모델
 
 | Provider | 모델 | 특징 | 추천 용도 |
 |----------|------|------|----------|
-| **OpenAI** | GPT-4o, GPT-4, GPT-3.5 | 가장 범용적, 강력한 성능 | 일반적인 대화, 코드 생성 |
-| **Anthropic** | Claude 3.5 Sonnet/Haiku | 200K 토큰 컨텍스트, 높은 안전성 | 긴 문서 분석, 안전이 중요한 서비스 |
+| **OpenAI** | GPT-5.2, GPT-5.2-Codex, GPT-5-mini | 400K 컨텍스트, ARC-AGI 90%+, 최강 코딩 성능 | 복잡한 추론, 코드 생성, 에이전트 |
+| **Anthropic** | Claude Opus 4.5, Claude Sonnet 4.5, Claude Haiku 4.5 | 200K 컨텍스트, 최고 수준의 코딩/에이전트 성능 | 긴 문서 분석, 코딩, 컴퓨터 사용 |
+| **Google Vertex AI** | Gemini 3 Pro, Gemini 3 Flash | 1M 컨텍스트, PhD급 추론, 멀티모달 | 이미지/비디오 처리, 복잡한 추론 |
 | **Azure OpenAI** | GPT 시리즈 | 엔터프라이즈급 보안 및 규정 준수 | 기업 환경, 데이터 주권이 중요한 경우 |
-| **Google Vertex AI** | Gemini Pro | 멀티모달 (텍스트+이미지+비디오) | 이미지/비디오 처리가 필요한 경우 |
-| **Amazon Bedrock** | Claude, Titan 등 | AWS 생태계 통합 | AWS 인프라 사용 기업 |
+| **Amazon Bedrock** | Claude, Titan, Llama 등 | AWS 생태계 통합, 다양한 모델 선택 | AWS 인프라 사용 기업 |
 
 #### 로컬 모델 (Ollama)
 
 인터넷 연결 없이, 비용 걱정 없이 AI를 사용하고 싶다면 Ollama가 정답입니다!
 
-| 모델 | 크기 | 용도 | 필요 RAM |
-|------|------|------|----------|
-| **Llama 3.2** | 1B/3B | 빠른 응답이 필요한 간단한 작업 | 4GB+ |
-| **Llama 3.1** | 8B/70B | 범용 작업 | 8GB+/64GB+ |
-| **Mistral** | 7B | 추론, 코딩 | 8GB+ |
-| **CodeLlama** | 7B/13B | 코드 생성 전문 | 8GB+/16GB+ |
+| 모델 | 크기 | 용도 | 필요 VRAM |
+|------|------|------|-----------|
+| **DeepSeek R1** | 8B/671B | 추론 특화, O3급 성능 | 8GB+/다중GPU |
+| **Qwen3** | 8B/32B/235B MoE | 다국어 지원, 코딩, 에이전트 | 8GB+/24GB+ |
+| **Llama 4** | 8B/70B | 범용 작업, 상업적 사용 가능 | 8GB+/48GB+ |
+| **Gemma 3** | 9B/27B | Google 경량 모델, 빠른 응답 | 8GB+/24GB+ |
+| **GLM 4.7** | 9B/30B | 빠른 응답, 도구 호출 지원 | 8GB+/24GB+ |
 
-> 💡 **팁**: 개발 단계에서는 Ollama로 무료로 테스트하고, 프로덕션에서만 유료 API를 사용하는 전략을 추천합니다!
+> 💡 **팁**: 개발 단계에서는 Ollama로 무료로 테스트하고, 프로덕션에서만 유료 API를 사용하는 전략을 추천합니다! `ollama launch` 명령으로 Claude Code 등과 쉽게 연동할 수 있습니다. 
 
 ### 1.1.3 프로젝트 설정
 
@@ -138,28 +122,47 @@ Dependencies:
 
 ```kotlin
 // build.gradle.kts
-plugins {
+plugins {   
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
-    id("org.springframework.boot") version "3.4.5"
+    id("org.springframework.boot") version "3.5.10"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
+extra["springAiVersion"] = "1.1.2"
+
 dependencies {
-    // Spring AI BOM (Bill of Materials)
-    implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0"))
 
     // OpenAI 사용 시
-    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
+    implementation("org.springframework.ai:spring-ai-starter-model-openai")
 
     // 또는 Anthropic 사용 시
-    // implementation("org.springframework.ai:spring-ai-anthropic-spring-boot-starter")
-
+    // implementation("org.springframework.ai:spring-ai-starter-model-anthropic")
+ 
+    // 또는 Google Gemini 사용 시
+    // implementation("org.springframework.ai:spring-ai-starter-model-google-genai")
+ 
     // 기본 의존성
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.projectreactor:reactor-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
+
+dependencyManagement {
+ imports {
+  mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
+ }
+}
+
 ```
 
 ### 1.1.4 API 키 관리
@@ -172,6 +175,7 @@ API 키는 절대로 코드에 직접 작성하면 안 됩니다! 환경 변수�
 # ~/.zshrc 또는 ~/.bashrc에 추가
 export OPENAI_API_KEY=sk-proj-xxxxx
 export ANTHROPIC_API_KEY=sk-ant-xxxxx
+export GEMINI_API_KEY=
 ```
 
 #### application.yml 설정
@@ -183,8 +187,7 @@ spring:
       api-key: ${OPENAI_API_KEY}
       chat:
         options:
-          model: gpt-4o
-          temperature: 0.7  # 0.0(결정적) ~ 2.0(창의적)
+          model: gpt-5.2
 ```
 
 > ⚠️ **보안 경고**: API 키가 Git에 커밋되지 않도록 `.gitignore`에 환경 파일을 추가하세요!
@@ -248,7 +251,7 @@ class ChatService(chatClientBuilder: ChatClient.Builder) {
         return chatClient.prompt()
             .user(message)  // 사용자 메시지 설정
             .call()         // AI 호출
-            .content()      // 응답 내용 추출
+            .content()!!      // 응답 내용 추출
     }
 }
 ```

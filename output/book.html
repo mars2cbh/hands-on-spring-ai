@@ -9,7 +9,7 @@
     <body>
         
     <div class="cover-page">
-        <img src="file:///Users/robin/Downloads/spring-ai-examples/book/images/book-cover.png" alt="Book Cover">
+        <img src="file:///Users/robin/Documents/hands-on-spring-ai/images/book-cover.png" alt="Book Cover">
     </div>
     
         
@@ -24,7 +24,7 @@
         <p>이 책의 저작권은 저자에게 있습니다.</p>
         <p>이 책의 내용은 학습 목적으로 자유롭게 사용할 수 있습니다.</p>
         <br>
-        <p>PDF 생성일: 2026년 01월 26일</p>
+        <p>PDF 생성일: 2026년 01월 27일</p>
     </div>
     
         
@@ -114,26 +114,10 @@
 </table>
 <h4 id="_3">아키텍처 개요</h4>
 <p>Spring AI의 아키텍처를 시각적으로 이해해봅시다:</p>
-<p><img alt="Spring AI Architecture" src="file:///Users/robin/Downloads/spring-ai-examples/book/images/spring-ai-architecture.png" /></p>
-<div class="codehilite"><pre><span></span><code>┌─────────────────────────────────────────────────────────────┐
-│                    애플리케이션 레이어                         │
-│              (여러분의 비즈니스 로직이 있는 곳)                  │
-├─────────────────────────────────────────────────────────────┤
-│                       ChatClient                             │
-│            (통합된 API - 모든 제공자에 동일하게 사용)            │
-├─────────────────────────────────────────────────────────────┤
-│    OpenAI    │   Anthropic   │   Azure   │   Ollama        │
-│   ChatModel  │   ChatModel   │  ChatModel │  ChatModel      │
-│   (GPT-4o)   │   (Claude)    │   (Azure)  │   (로컬)        │
-├─────────────────────────────────────────────────────────────┤
-│                      HTTP/API 레이어                         │
-│              (각 제공자와의 실제 통신 담당)                     │
-└─────────────────────────────────────────────────────────────┘
-</code></pre></div>
-
+<p><img alt="Spring AI Architecture" src="file:///Users/robin/Documents/hands-on-spring-ai/images/spring-ai-architecture.png" /></p>
 <p>이 구조의 아름다움은 <strong>ChatClient</strong>라는 추상화 계층에 있습니다. 여러분의 비즈니스 코드는 ChatClient만 알면 되고, 실제로 어떤 AI 모델을 사용하는지는 설정 파일에서 결정됩니다. 나중에 OpenAI에서 Claude로 바꾸고 싶다면? 의존성과 설정만 변경하면 됩니다!</p>
 <h3 id="112-ai">1.1.2 지원 AI 모델</h3>
-<p>Spring AI는 다양한 AI 제공자를 지원합니다. 각각의 특징을 알아봅시다.</p>
+<p>Spring AI는 다양한 AI 제공자를 지원합니다. 각각의 특징을 알아봅시다. (2026년 1월 기준)</p>
 <h4 id="_4">클라우드 모델</h4>
 <table>
 <thead>
@@ -147,15 +131,21 @@
 <tbody>
 <tr>
 <td><strong>OpenAI</strong></td>
-<td>GPT-4o, GPT-4, GPT-3.5</td>
-<td>가장 범용적, 강력한 성능</td>
-<td>일반적인 대화, 코드 생성</td>
+<td>GPT-5.2, GPT-5.2-Codex, GPT-5-mini</td>
+<td>400K 컨텍스트, ARC-AGI 90%+, 최강 코딩 성능</td>
+<td>복잡한 추론, 코드 생성, 에이전트</td>
 </tr>
 <tr>
 <td><strong>Anthropic</strong></td>
-<td>Claude 3.5 Sonnet/Haiku</td>
-<td>200K 토큰 컨텍스트, 높은 안전성</td>
-<td>긴 문서 분석, 안전이 중요한 서비스</td>
+<td>Claude Opus 4.5, Claude Sonnet 4.5, Claude Haiku 4.5</td>
+<td>200K 컨텍스트, 최고 수준의 코딩/에이전트 성능</td>
+<td>긴 문서 분석, 코딩, 컴퓨터 사용</td>
+</tr>
+<tr>
+<td><strong>Google Vertex AI</strong></td>
+<td>Gemini 3 Pro, Gemini 3 Flash</td>
+<td>1M 컨텍스트, PhD급 추론, 멀티모달</td>
+<td>이미지/비디오 처리, 복잡한 추론</td>
 </tr>
 <tr>
 <td><strong>Azure OpenAI</strong></td>
@@ -164,15 +154,9 @@
 <td>기업 환경, 데이터 주권이 중요한 경우</td>
 </tr>
 <tr>
-<td><strong>Google Vertex AI</strong></td>
-<td>Gemini Pro</td>
-<td>멀티모달 (텍스트+이미지+비디오)</td>
-<td>이미지/비디오 처리가 필요한 경우</td>
-</tr>
-<tr>
 <td><strong>Amazon Bedrock</strong></td>
-<td>Claude, Titan 등</td>
-<td>AWS 생태계 통합</td>
+<td>Claude, Titan, Llama 등</td>
+<td>AWS 생태계 통합, 다양한 모델 선택</td>
 <td>AWS 인프라 사용 기업</td>
 </tr>
 </tbody>
@@ -185,38 +169,44 @@
 <th>모델</th>
 <th>크기</th>
 <th>용도</th>
-<th>필요 RAM</th>
+<th>필요 VRAM</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Llama 3.2</strong></td>
-<td>1B/3B</td>
-<td>빠른 응답이 필요한 간단한 작업</td>
-<td>4GB+</td>
+<td><strong>DeepSeek R1</strong></td>
+<td>8B/671B</td>
+<td>추론 특화, O3급 성능</td>
+<td>8GB+/다중GPU</td>
 </tr>
 <tr>
-<td><strong>Llama 3.1</strong></td>
+<td><strong>Qwen3</strong></td>
+<td>8B/32B/235B MoE</td>
+<td>다국어 지원, 코딩, 에이전트</td>
+<td>8GB+/24GB+</td>
+</tr>
+<tr>
+<td><strong>Llama 4</strong></td>
 <td>8B/70B</td>
-<td>범용 작업</td>
-<td>8GB+/64GB+</td>
+<td>범용 작업, 상업적 사용 가능</td>
+<td>8GB+/48GB+</td>
 </tr>
 <tr>
-<td><strong>Mistral</strong></td>
-<td>7B</td>
-<td>추론, 코딩</td>
-<td>8GB+</td>
+<td><strong>Gemma 3</strong></td>
+<td>9B/27B</td>
+<td>Google 경량 모델, 빠른 응답</td>
+<td>8GB+/24GB+</td>
 </tr>
 <tr>
-<td><strong>CodeLlama</strong></td>
-<td>7B/13B</td>
-<td>코드 생성 전문</td>
-<td>8GB+/16GB+</td>
+<td><strong>GLM 4.7</strong></td>
+<td>9B/30B</td>
+<td>빠른 응답, 도구 호출 지원</td>
+<td>8GB+/24GB+</td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>💡 <strong>팁</strong>: 개발 단계에서는 Ollama로 무료로 테스트하고, 프로덕션에서만 유료 API를 사용하는 전략을 추천합니다!</p>
+<p>💡 <strong>팁</strong>: 개발 단계에서는 Ollama로 무료로 테스트하고, 프로덕션에서만 유료 API를 사용하는 전략을 추천합니다! <code>ollama launch</code> 명령으로 Claude Code 등과 쉽게 연동할 수 있습니다. </p>
 </blockquote>
 <h3 id="113">1.1.3 프로젝트 설정</h3>
 <h4 id="spring-initializr">Spring Initializr로 시작하기</h4>
@@ -231,27 +221,45 @@
 
 <h4 id="gradle-kotlin-dsl">Gradle 설정 (Kotlin DSL)</h4>
 <div class="codehilite"><pre><span></span><code><span class="c1">// build.gradle.kts</span>
-<span class="n">plugins</span><span class="w"> </span><span class="p">{</span>
+<span class="n">plugins</span><span class="w"> </span><span class="p">{</span><span class="w">   </span>
 <span class="w">    </span><span class="n">kotlin</span><span class="p">(</span><span class="s">&quot;jvm&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;1.9.25&quot;</span>
 <span class="w">    </span><span class="n">kotlin</span><span class="p">(</span><span class="s">&quot;plugin.spring&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;1.9.25&quot;</span>
-<span class="w">    </span><span class="n">id</span><span class="p">(</span><span class="s">&quot;org.springframework.boot&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;3.4.5&quot;</span>
+<span class="w">    </span><span class="n">id</span><span class="p">(</span><span class="s">&quot;org.springframework.boot&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;3.5.10&quot;</span>
 <span class="w">    </span><span class="n">id</span><span class="p">(</span><span class="s">&quot;io.spring.dependency-management&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;1.1.7&quot;</span>
 <span class="p">}</span>
 
+<span class="n">extra</span><span class="o">[</span><span class="s">&quot;springAiVersion&quot;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;1.1.2&quot;</span>
+
 <span class="n">dependencies</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="c1">// Spring AI BOM (Bill of Materials)</span>
-<span class="w">    </span><span class="n">implementation</span><span class="p">(</span><span class="n">platform</span><span class="p">(</span><span class="s">&quot;org.springframework.ai:spring-ai-bom:1.0.0&quot;</span><span class="p">))</span>
 
 <span class="w">    </span><span class="c1">// OpenAI 사용 시</span>
-<span class="w">    </span><span class="n">implementation</span><span class="p">(</span><span class="s">&quot;org.springframework.ai:spring-ai-openai-spring-boot-starter&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">implementation</span><span class="p">(</span><span class="s">&quot;org.springframework.ai:spring-ai-starter-model-openai&quot;</span><span class="p">)</span>
 
 <span class="w">    </span><span class="c1">// 또는 Anthropic 사용 시</span>
-<span class="w">    </span><span class="c1">// implementation(&quot;org.springframework.ai:spring-ai-anthropic-spring-boot-starter&quot;)</span>
+<span class="w">    </span><span class="c1">// implementation(&quot;org.springframework.ai:spring-ai-starter-model-anthropic&quot;)</span>
+
+<span class="w">    </span><span class="c1">// 또는 Google Gemini 사용 시</span>
+<span class="w">    </span><span class="c1">// implementation(&quot;org.springframework.ai:spring-ai-starter-model-google-genai&quot;)</span>
 
 <span class="w">    </span><span class="c1">// 기본 의존성</span>
 <span class="w">    </span><span class="n">implementation</span><span class="p">(</span><span class="s">&quot;org.springframework.boot:spring-boot-starter-web&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">implementation</span><span class="p">(</span><span class="s">&quot;org.springframework.boot:spring-boot-starter-webflux&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="n">implementation</span><span class="p">(</span><span class="s">&quot;com.fasterxml.jackson.module:jackson-module-kotlin&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">implementation</span><span class="p">(</span><span class="s">&quot;io.projectreactor.kotlin:reactor-kotlin-extensions&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="n">implementation</span><span class="p">(</span><span class="s">&quot;org.jetbrains.kotlin:kotlin-reflect&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">implementation</span><span class="p">(</span><span class="s">&quot;org.jetbrains.kotlinx:kotlinx-coroutines-reactor&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="n">testImplementation</span><span class="p">(</span><span class="s">&quot;org.springframework.boot:spring-boot-starter-test&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">testImplementation</span><span class="p">(</span><span class="s">&quot;io.projectreactor:reactor-test&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">testImplementation</span><span class="p">(</span><span class="s">&quot;org.jetbrains.kotlin:kotlin-test-junit5&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">testImplementation</span><span class="p">(</span><span class="s">&quot;org.jetbrains.kotlinx:kotlinx-coroutines-test&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">testRuntimeOnly</span><span class="p">(</span><span class="s">&quot;org.junit.platform:junit-platform-launcher&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">dependencyManagement</span><span class="w"> </span><span class="p">{</span>
+<span class="w"> </span><span class="n">imports</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">mavenBom</span><span class="p">(</span><span class="s">&quot;org.springframework.ai:spring-ai-bom:</span><span class="si">${</span><span class="n">property</span><span class="p">(</span><span class="s">&quot;</span><span class="n">springAiVersion</span><span class="s">&quot;</span><span class="p">)</span><span class="si">}</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -261,6 +269,7 @@
 <div class="codehilite"><pre><span></span><code><span class="c1"># ~/.zshrc 또는 ~/.bashrc에 추가</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span>sk-proj-xxxxx
 <span class="nb">export</span><span class="w"> </span><span class="nv">ANTHROPIC_API_KEY</span><span class="o">=</span>sk-ant-xxxxx
+<span class="nb">export</span><span class="w"> </span><span class="nv">GEMINI_API_KEY</span><span class="o">=</span>
 </code></pre></div>
 
 <h4 id="applicationyml">application.yml 설정</h4>
@@ -270,8 +279,7 @@
 <span class="w">      </span><span class="nt">api-key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OPENAI_API_KEY}</span>
 <span class="w">      </span><span class="nt">chat</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">options</span><span class="p">:</span>
-<span class="w">          </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpt-4o</span>
-<span class="w">          </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.7</span><span class="w">  </span><span class="c1"># 0.0(결정적) ~ 2.0(창의적)</span>
+<span class="w">          </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpt-5.2</span>
 </code></pre></div>
 
 <blockquote>
@@ -327,7 +335,7 @@
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">chatClient</span><span class="p">.</span><span class="na">prompt</span><span class="p">()</span>
 <span class="w">            </span><span class="p">.</span><span class="na">user</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="w">  </span><span class="c1">// 사용자 메시지 설정</span>
 <span class="w">            </span><span class="p">.</span><span class="na">call</span><span class="p">()</span><span class="w">         </span><span class="c1">// AI 호출</span>
-<span class="w">            </span><span class="p">.</span><span class="na">content</span><span class="p">()</span><span class="w">      </span><span class="c1">// 응답 내용 추출</span>
+<span class="w">            </span><span class="p">.</span><span class="na">content</span><span class="p">()</span><span class="o">!!</span><span class="w">      </span><span class="c1">// 응답 내용 추출</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -428,7 +436,7 @@ API 키, 모델 설정 등이 이미 구성되어 있어서 추가 설정 없이
 </blockquote>
 <h3 id="122">1.2.2 메시지 역할 이해하기</h3>
 <p>AI 대화에서는 세 가지 역할의 메시지가 있습니다:</p>
-<p><img alt="Message Roles" src="file:///Users/robin/Downloads/spring-ai-examples/book/images/message-roles.png" /></p>
+<p><img alt="Message Roles" src="file:///Users/robin/Documents/hands-on-spring-ai/images/message-roles.png" /></p>
 <table>
 <thead>
 <tr>
@@ -738,7 +746,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </s
 <h3 id="131-streaming">1.3.1 Streaming이 필요한 이유</h3>
 <p>ChatGPT를 사용해보셨다면, 응답이 한 글자씩 타이핑되듯이 나타나는 것을 보셨을 겁니다. 이것이 바로 <strong>스트리밍</strong>입니다.</p>
 <h4 id="_16">왜 스트리밍을 사용할까요?</h4>
-<p><img alt="Streaming Comparison" src="file:///Users/robin/Downloads/spring-ai-examples/book/images/streaming-comparison.png" /></p>
+<p><img alt="Streaming Comparison" src="file:///Users/robin/Documents/hands-on-spring-ai/images/streaming-comparison.png" /></p>
 <table>
 <thead>
 <tr>
@@ -1299,7 +1307,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </s
 <p>"AI에게 어떻게 물어보느냐에 따라 답이 완전히 달라집니다."</p>
 <p>이 말이 프롬프트 엔지니어링의 핵심입니다. 같은 AI 모델이라도 질문하는 방법에 따라 평범한 답변을 받을 수도 있고, 전문가 수준의 통찰을 얻을 수도 있습니다.</p>
 <p>이 장에서는 AI의 잠재력을 최대한 끌어내는 프롬프트 기법들을 배워봅니다. 템플릿 활용부터 구조화된 출력, 고급 추론 기법까지 - 여러분의 AI 애플리케이션을 한 단계 업그레이드할 준비를 해봅시다!</p>
-<p><img alt="Prompt Engineering Patterns" src="file:///Users/robin/Downloads/spring-ai-examples/book/images/prompt-engineering-patterns.png" /></p>
+<p><img alt="Prompt Engineering Patterns" src="file:///Users/robin/Documents/hands-on-spring-ai/images/prompt-engineering-patterns.png" /></p>
 <hr />
 <h2 id="module-21">Module 2.1: 프롬프트 템플릿과 변수</h2>
 <h3 id="211-prompttemplate">2.1.1 PromptTemplate 개요</h3>
@@ -2607,7 +2615,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </s
 <p>지금까지 AI는 텍스트를 생성하는 데 그쳤습니다. "서울 날씨가 어때?"라고 물으면 "제가 실시간 정보에 접근할 수 없어서 알 수 없습니다"라는 답변을 받았죠.</p>
 <p>하지만 <strong>Function Calling</strong>을 사용하면 완전히 달라집니다. AI가 "서울 날씨를 알기 위해 weather() 함수를 호출해야겠다"고 판단하고, 실제로 날씨 API를 호출한 후, 그 결과를 바탕으로 "서울은 현재 5도이고 맑습니다"라고 답변할 수 있게 됩니다.</p>
 <p>이것이 AI 에이전트의 시작입니다!</p>
-<p><img alt="Function Calling Flow" src="file:///Users/robin/Downloads/spring-ai-examples/book/images/function-calling-flow.png" /></p>
+<p><img alt="Function Calling Flow" src="file:///Users/robin/Documents/hands-on-spring-ai/images/function-calling-flow.png" /></p>
 <hr />
 <h2 id="module-31-function-calling">Module 3.1: Function Calling 기초</h2>
 <h3 id="311-function-calling">3.1.1 Function Calling이란?</h3>
@@ -2617,7 +2625,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </s
 - AI는 "이 함수를 이 인자로 호출해야 한다"는 <strong>결정</strong>만 합니다
 - 실제 함수 실행은 <strong>여러분의 애플리케이션</strong>에서 수행합니다
 - 결과를 다시 AI에게 전달하면 AI가 최종 응답을 생성합니다</p>
-<p><img alt="Function Calling Concept" src="file:///Users/robin/Downloads/spring-ai-examples/book/images/function-calling-concept.png" /></p>
+<p><img alt="Function Calling Concept" src="file:///Users/robin/Documents/hands-on-spring-ai/images/function-calling-concept.png" /></p>
 <table>
 <thead>
 <tr>
@@ -3248,7 +3256,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </s
 <h2 id="module-33-advisors">Module 3.3: Advisors 패턴</h2>
 <h3 id="331-advisor">3.3.1 Advisor란?</h3>
 <p>Advisor는 AI 요청/응답을 가로채서 처리하는 인터셉터입니다. Spring AOP와 비슷한 개념입니다.</p>
-<p><img alt="Advisor Pattern" src="file:///Users/robin/Downloads/spring-ai-examples/book/images/advisor-pattern.png" /></p>
+<p><img alt="Advisor Pattern" src="file:///Users/robin/Documents/hands-on-spring-ai/images/advisor-pattern.png" /></p>
 <table>
 <thead>
 <tr>
@@ -3719,7 +3727,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </s
 <h2 id="_1">들어가며</h2>
 <p>지금까지 우리는 Spring AI의 기초, 프롬프트 엔지니어링, 그리고 Function Calling을 배웠습니다. 이제 한 단계 더 나아가 <strong>AI 에이전트</strong>의 세계로 들어갑니다.</p>
 <p>AI 에이전트란 무엇일까요? 단순히 질문에 답하는 챗봇을 넘어, <strong>스스로 생각하고, 계획하고, 실행하는</strong> AI 시스템입니다. 마치 숙련된 직원처럼 복잡한 작업을 여러 단계로 나누고, 각 단계를 수행하며, 필요하면 다시 계획을 수정하기도 합니다.</p>
-<p><img alt="Agentic Patterns" src="file:///Users/robin/Downloads/spring-ai-examples/book/images/agentic-patterns.png" /></p>
+<p><img alt="Agentic Patterns" src="file:///Users/robin/Documents/hands-on-spring-ai/images/agentic-patterns.png" /></p>
 <p>이번 파트에서는 6가지 핵심 에이전트 패턴을 배웁니다:</p>
 <ol>
 <li><strong>Chain Workflow</strong> - 순차적 작업 처리</li>
@@ -6542,7 +6550,7 @@ Input ───┼──→ [Model 2] ──┼──→ Vote/Consensus → Outp
 <p>Part 3에서 우리는 Function Calling을 배웠습니다. AI가 외부 함수를 호출하여 실제 작업을 수행하는 강력한 기능이었죠. 하지만 문제가 있습니다. 각 애플리케이션마다 도구를 따로 구현해야 합니다.</p>
 <p><strong>MCP(Model Context Protocol)</strong>는 이 문제를 해결합니다. Anthropic이 개발한 이 오픈 프로토콜은 AI와 외부 도구 사이의 <strong>표준화된 인터페이스</strong>를 제공합니다. 한 번 MCP 서버를 만들면, 어떤 MCP 클라이언트에서든 그 도구를 사용할 수 있습니다.</p>
 <p>마치 <strong>USB</strong>와 같습니다. USB 표준 덕분에 어떤 제조사의 기기든 어떤 컴퓨터에든 연결할 수 있듯이, MCP 덕분에 어떤 AI 도구든 어떤 AI 애플리케이션에서든 사용할 수 있습니다.</p>
-<p><img alt="MCP Architecture" src="file:///Users/robin/Downloads/spring-ai-examples/book/images/mcp-architecture.png" /></p>
+<p><img alt="MCP Architecture" src="file:///Users/robin/Documents/hands-on-spring-ai/images/mcp-architecture.png" /></p>
 <hr />
 <h2 id="module-51-mcp">Module 5.1: MCP 개요와 아키텍처</h2>
 <h3 id="511-mcp">5.1.1 MCP란?</h3>
@@ -6581,7 +6589,7 @@ Input ───┼──→ [Model 2] ──┼──→ Vote/Consensus → Outp
 </table>
 <h3 id="512">5.1.2 아키텍처 개요</h3>
 <p>MCP 아키텍처는 네 개의 주요 레이어로 구성됩니다:</p>
-<p><img alt="MCP Architecture Detail" src="file:///Users/robin/Downloads/spring-ai-examples/book/images/mcp-architecture-detail.png" /></p>
+<p><img alt="MCP Architecture Detail" src="file:///Users/robin/Documents/hands-on-spring-ai/images/mcp-architecture-detail.png" /></p>
 <table>
 <thead>
 <tr>
